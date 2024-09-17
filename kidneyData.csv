@@ -1,4 +1,4 @@
-,image_id,path,diag,target,Class
+id,image_id,path,diag,target,Class
 0,Tumor- (1044),"/content/data/CT KIDNEY DATASET Normal, CYST, TUMOR and STONE/TUMOR/Tumor- (1044).jpg",Tumor,3,Tumor
 1,Tumor- (83),"/content/data/CT KIDNEY DATASET Normal, CYST, TUMOR and STONE/TUMOR/Tumor- (83).jpg",Tumor,3,Tumor
 2,Tumor- (580),"/content/data/CT KIDNEY DATASET Normal, CYST, TUMOR and STONE/TUMOR/Tumor- (580).jpg",Tumor,3,Tumor
