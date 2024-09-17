@@ -1,0 +1,51 @@
+help:
+	@python -c "$(PRINT_HELP_PYSCRIPT)" < $(MAKEFILE_LIST)
+
+clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
+
+clean-build: ## remove build artifacts
+	@if exist build (rmdir /s /q build)
+	@if exist dist (rmdir /s /q dist)
+	@if exist .eggs (rmdir /s /q .eggs)
+	@for /r %%i in (*.egg-info) do rmdir /s /q "%%i"
+	@for /r %%i in (*.egg) do del /f "%%i"
+
+clean-pyc: ## remove Python file artifacts
+	@for /r %%i in (*.pyc) do del /f "%%i"
+	@for /r %%i in (*.pyo) do del /f "%%i"
+	@for /r %%i in (*~) do del /f "%%i"
+	@for /r %%i in (__pycache__) do rmdir /s /q "%%i"
+
+clean-test: ## remove test and coverage artifacts
+	@if exist .coverage (del /f .coverage)
+	@if exist coverage-reports (rmdir /s /q coverage-reports)
+	@if exist .pytest_cache (rmdir /s /q .pytest_cache)
+
+lint: ## check style with flake8
+	@flake8 --config=.flake8 src/rebind/copilot tests
+
+format:
+	black src/rebind/copilot tests
+
+full-format:
+	black .
+	isort .
+	flake8 .
+
+check: format lint coverage
+
+installed:
+	pip freeze > reqs.txt
+	code reqs.txt
+
+install-pre-commit:
+	.venv\Scripts\pre-commit install
+
+uninstall-pre-commit:
+	.venv\Scripts\pre-commit uninstall
+
+test:
+	@set PYTHONPATH=".;src;tests" && pytest -s -rPx tests/
+
+focus:
+	@set PYTHONPATH=".;src;tests" && pytest -s -rPx tests/.py
