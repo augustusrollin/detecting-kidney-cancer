@@ -1,8 +1,18 @@
-from data_preprocessing import load_data, preprocess_data
-from model import build_model
+from src.DataPreprocessingManager import load_data, preprocess_data
+from src.ModelManager import build_model
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 import os
 
-def train_model(csv_path, img_dir, model_save_path='kidney_cnn_model.h5'):
+def train_model(csv_path, img_dir, model_save_path='kidney_cnn_model.h5', epochs=50):
+    """
+    Train the CNN model.
+
+    Args:
+        csv_path (str): Path to the CSV file containing image paths and labels.
+        img_dir (str): Root directory where images are stored.
+        model_save_path (str): Path to save the trained model.
+        epochs (int): Number of epochs for training.
+    """
     # Load and preprocess data
     images, labels = load_data(csv_path, img_dir)
     train_generator, test_generator = preprocess_data(images, labels)
@@ -10,14 +20,23 @@ def train_model(csv_path, img_dir, model_save_path='kidney_cnn_model.h5'):
     # Build the model
     model = build_model()
     
-    # Train the model
-    model.fit(train_generator, epochs=10, validation_data=test_generator)
+    # Define callbacks
+    checkpoint = ModelCheckpoint(model_save_path, monitor='val_accuracy', save_best_only=True, verbose=1)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=1)
     
-    # Save the model
+    # Train the model
+    history = model.fit(
+        train_generator,
+        epochs=epochs,
+        validation_data=test_generator,
+        callbacks=[checkpoint, early_stopping]
+    )
+    
+    # Save the final model
     model.save(model_save_path)
     print(f"Model saved to {model_save_path}")
 
 if __name__ == '__main__':
     csv_path = 'kidneyData.csv'
-    img_dir = './'  # Root directory of the project
+    img_dir = 'kidney_ct_data'  # Adjusted to the correct directory
     train_model(csv_path, img_dir)
