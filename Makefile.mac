@@ -51,9 +51,9 @@ focus:
 	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/.py
 
 train:
-	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx src/TrainingManager.py
+	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/test_training.py
 
 evaluate:
-	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx src/EvaluationManager.py
+	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/test_evaluation.py
 
 detect: train evaluate
