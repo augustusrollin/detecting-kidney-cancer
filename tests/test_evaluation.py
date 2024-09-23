@@ -4,7 +4,7 @@ from EvaluationManager import EvaluationManager
 
 
 # @pytest.mark.skip(reason="takes a while to run")
-def test_primary_chunking_1():
+def test_evaluate():
     data_folder = "kidney_ct_data"
 
     os.makedirs(data_folder, exist_ok=True)

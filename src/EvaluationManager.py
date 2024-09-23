@@ -1,7 +1,8 @@
 from tensorflow.keras.models import load_model
-from srcs.DataPreprocessingManager import load_data, preprocess_data
 from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
+
+from srcs.DataPreprocessingManager import load_data, preprocess_data
 
 class EvaluationManager:
 
