@@ -41,7 +41,7 @@ This is data of CT Scans that detected benign tumors, cancerous tumors, kidney s
 https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 
 ## Outline
-This is the general outline I currently have for the plan for CS Research.
+This is the general outline I currently have for the plan for CS Research.\
 https://docs.google.com/document/d/17-IYpmrqE0HKDivBMHZIiV9BpNWg1-dO3UNp64TP-5A/edit#heading=h.lqkzgapjvm91
 
 ## Research
