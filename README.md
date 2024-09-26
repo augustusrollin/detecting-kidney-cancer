@@ -19,15 +19,17 @@ make detect
 ```
 
 ## Details to train the model
-In order to train the model run the following command:
+Training the model consists of compiling around 10,000 images worth of data that divided into 4 main categories: normal, tumor, stone, cyst. After training the model it should be able to know the difference between those 4 different categories. In order to train the model run the following command:
 ```zsh
 make train
 ```
 
 ## Details to evaluate the model
+The evaluation of the model bassically displays data to show how accurate the training was. It will create confusion matrices and show the overall percentages of the output. In order to train the model run the following command:
 ```zsh
 make evaluate
 ```
+
 # What the data means
 The data contains example images of what a benign tumor is, cancerous tumor, kidney stone, and cystic kidney disease.
 
