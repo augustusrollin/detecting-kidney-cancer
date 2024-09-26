@@ -30,8 +30,8 @@ The evaluation of the model bassically displays data to show how accurate the tr
 make evaluate
 ```
 
-# What the data means
-The data contains example images of what a benign tumor is, cancerous tumor, kidney stone, and cystic kidney disease.
+# What the data is
+The data contains around 10,000 example images of what a benign tumor is, cancerous tumor, kidney stone, and cystic kidney disease. Using all the data it is then possible to use the model to detect what is cancerous.
 
 # References
 
