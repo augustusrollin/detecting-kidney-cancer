@@ -36,18 +36,18 @@ The data contains around 10,000 example images of what a benign tumor is, cancer
 # References
 Everything here is not necceasrily refrences I am using, it consists of both a brainstorm of potential helpful ideas and stuff I am actually using.
 
-## Data
+### Data
 This is data of CT Scans that detected benign tumors, cancerous tumors, kidney stones, and cystic kidney disease.\
 https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 
-## Outline
+### Outline
 This is the general outline I currently have for the plan for CS Research.\
 https://docs.google.com/document/d/17-IYpmrqE0HKDivBMHZIiV9BpNWg1-dO3UNp64TP-5A/edit#heading=h.lqkzgapjvm91
 
-## Research
+### Research
 This is my document filled with all of my research that I have done for the project.\
 https://docs.google.com/document/d/1jyCNkPNPi46cjxJ8s3Vau9Eh5qat1DngavqQPdU4fZU/edit#heading=h.ou0x58cx9yea
 
-## Potential Data
+### Potential Data
 I gathered a lot of potential data I can use here.\
 https://docs.google.com/document/d/15bKcaG3rvsBdYztuoyvrZNVk1f7BVaxxSHiR8Exsnhw/edit#heading=h.2kxi2um9ycqv
