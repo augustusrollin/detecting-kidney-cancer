@@ -1,8 +1,8 @@
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 import os
 
-from src.ModelManager import build_model
-from src.DataPreprocessingManager import load_data, preprocess_data
+from ModelManager import build_model
+from DataPreprocessingManager import load_data, preprocess_data
 
 class TrainingManager:
 

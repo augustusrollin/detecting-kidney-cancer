@@ -7,6 +7,7 @@ class ModelManager:
         return
 
 
+    @staticmethod
     def build_model(input_shape=(128, 128, 3), num_classes=4):
         """
         Build a Convolutional Neural Network model.

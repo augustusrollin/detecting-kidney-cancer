@@ -2,7 +2,7 @@
 
 The overall goal of this project is to detect kidney cancer. This is done by training a model on around 10,000 images and the results of that can then be stored and evaluated. 
 
-# Setup
+## Setup
 
 ```zsh
 python -m venv .venv
@@ -12,7 +12,7 @@ pip install -r requirements_dev.txt
 pip install -r requirements.txt
 ```
 
-# How to train and evaluate the model
+## How to train and evaluate the model
 There are several different ways to go about executing this code. Either run it all together or run it one by one. If you would like to evaluate the model and train it with one command run the following:
 ```zsh
 make detect
@@ -30,10 +30,10 @@ The evaluation of the model bassically displays data to show how accurate the tr
 make evaluate
 ```
 
-# What the data is
+## What the data is
 The data contains around 10,000 example images of what a benign tumor is, cancerous tumor, kidney stone, and cystic kidney disease. Using all the data it is then possible to use the model to detect what is cancerous.
 
-# References
+## References
 Everything here is not necceasrily refrences I am using, it consists of both a brainstorm of potential helpful ideas and stuff I am actually using.
 
 ### Data
