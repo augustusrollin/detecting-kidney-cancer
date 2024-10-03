@@ -51,3 +51,6 @@ https://docs.google.com/document/d/1jyCNkPNPi46cjxJ8s3Vau9Eh5qat1DngavqQPdU4fZU/
 ### Potential Data
 I gathered a lot of potential data I can use here.\
 https://docs.google.com/document/d/15bKcaG3rvsBdYztuoyvrZNVk1f7BVaxxSHiR8Exsnhw/edit#heading=h.2kxi2um9ycqv
+
+### Research Paper Outline
+https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/edit
