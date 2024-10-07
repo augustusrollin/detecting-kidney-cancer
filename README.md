@@ -21,7 +21,7 @@ pip install -r requirements.txt
 * Clean up the repo in general
 
 ## Example Data
-![Tumor Image](kidney_ct_data/Tumor/Tumor- (1).jpg)
+![Tumor Image](kidney_ct_data/Tumor/Tumor-%20(1).jpg)
 
 ## How to train and evaluate the model
 There are several different ways to go about executing this code. Either run it all together or run it one by one. If you would like to evaluate the model and train it with one command run the following:
