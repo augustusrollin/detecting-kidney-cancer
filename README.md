@@ -23,6 +23,7 @@ Use less epochs when training the data, maybe get a cpu/gpu in order to make the
 \
 Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
 \
+\
 clean up the repo in general
 
 ## How to train and evaluate the model
