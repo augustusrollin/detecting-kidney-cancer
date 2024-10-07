@@ -20,6 +20,20 @@ pip install -r requirements.txt
 * Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
 * Clean up the repo in general
 
+## Example Data
+
+### Tumor Data
+![Tumor Image](kidney_ct_data/Tumor/Tumor-%20(1).jpg)
+
+### Normal Data
+![Normal Image](kidney_ct_data/Normal/Normal-%20(1).jpg)
+
+### Stone Data
+![Stone Image](kidney_ct_data/Stone/Stone-%20(1).jpg)
+
+### Cyst Data
+![Cyst Image](kidney_ct_data/Cyst/Cyst-%20(1).jpg)
+
 ## How to train and evaluate the model
 There are several different ways to go about executing this code. Either run it all together or run it one by one. If you would like to evaluate the model and train it with one command run the following:
 ```zsh
