@@ -14,16 +14,11 @@ pip install -r requirements.txt
 
 ## TODO
 * Fix the model so that it trains off the data properly
-Add sample data / csv that tests will automatically do \
-\
-Figure out how to make the training more acurate (maybe label the data / annotate the data) \
-\
-Use less epochs when training the data, maybe get a cpu/gpu in order to make the training better \
-\
-Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
-\
-\
-clean up the repo in general
+* Add sample data / csv that tests will automatically do
+* Figure out how to make the training more acurate (maybe label the data / annotate the data)
+* Use less epochs when training the data, maybe get a cpu/gpu in order to make the training better
+* Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
+* Clean up the repo in general
 
 ## How to train and evaluate the model
 There are several different ways to go about executing this code. Either run it all together or run it one by one. If you would like to evaluate the model and train it with one command run the following:
