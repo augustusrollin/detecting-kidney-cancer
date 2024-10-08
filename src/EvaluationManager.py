@@ -7,8 +7,8 @@ from DataPreprocessingManager import load_data, preprocess_data
 class EvaluationManager:
 
     def __init__(self, csv_path, img_dir):
-        csv_path = self.csv_path
-        img_dir = self.img_dir
+        self.csv_path = csv_path
+        self.img_dir = img_dir
 
 
     def evaluate_model(self, csv_path, img_dir, model_path='kidney_cnn_model.h5'):

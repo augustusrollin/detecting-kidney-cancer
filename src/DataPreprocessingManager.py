@@ -9,10 +9,10 @@ import numpy as np
 class DataPreprocessingManager:
 
     def __init__(self, csv_path, img_dir, images, labels):
-        csv_path = self.csv_path
-        img_dir = self.img_dir
-        images = self.images
-        labels = self.labels
+        self.csv_path = csv_path
+        self.img_dir = img_dir
+        self.images = images
+        self.labels = labels
 
         
     def load_data(self, csv_path, img_dir, target_size=(128, 128)):

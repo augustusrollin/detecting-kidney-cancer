@@ -7,9 +7,9 @@ from DataPreprocessingManager import load_data, preprocess_data
 class TrainingManager:
 
     def __init__(self, csv_path, img_dir, epochs):
-        csv_path = self.csv_path
-        img_dir = self.img_dir
-        epochs = self.epochs
+        self.csv_path = csv_path
+        self.img_dir = img_dir
+        self.epochs = epochs
 
 
     def train_model(self, csv_path, img_dir, model_save_path='kidney_cnn_model.h5', epochs=50):
