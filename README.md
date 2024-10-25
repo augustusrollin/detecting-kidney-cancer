@@ -53,7 +53,8 @@ make evaluate
 ```
 
 ## What the data is
-The data contains around 10,000 example images of what a benign tumor is, cancerous tumor, kidney stone, and cystic kidney disease. Using all the data it is then possible to use the model to detect what is cancerous.
+The dataset comprises approximately 10,000 example images, meticulously categorized to represent various medical conditions, including benign tumors, cancerous tumors, kidney stones, and cystic kidney disease. This extensive collection serves as a robust foundation for training a machine learning model, enabling it to discern subtle differences in imaging that indicate the presence of cancerous growths. By analyzing the diverse features and characteristics of each image, the model can learn to identify patterns that are associated with malignancy, ultimately enhancing its accuracy in detecting cancerous lesions. This capability not only streamlines the diagnostic process but also aids healthcare professionals in making informed decisions about patient care. With the potential to significantly reduce misdiagnosis and improve treatment outcomes, the application of this model could revolutionize early cancer detection and management strategies.
+
 
 ## References
 Everything here is not necceasrily refrences I am using, it consists of both a brainstorm of potential helpful ideas and stuff I am actually using.
