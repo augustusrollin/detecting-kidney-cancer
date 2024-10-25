@@ -14,7 +14,7 @@ class DataPreprocessingManager:
         self.images = images
         self.labels = labels
 
-        
+            
     def load_data(self, csv_path, img_dir, target_size=(128, 128)):
         """
         Load images and labels from the dataset.
