@@ -20,6 +20,12 @@ pip install -r requirements.txt
 * Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
 * Clean up the repo in general
 
+## Troubles
+* SSL Error
+* Downloading large quantities of data
+* Windows vs Mac
+* Venv
+
 ## Example Data
 
 ### Tumor Data
