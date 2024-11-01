@@ -69,6 +69,17 @@ Everything here is not necceasrily refrences I am using, it consists of both a b
 This is data of CT Scans that detected benign tumors, cancerous tumors, kidney stones, and cystic kidney disease.\
 https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 
+### Data Evaluations
+* Binary Classification Images
+* Multi-Class Classification Images
+* Segmentation Masks
+* Time-Series or Video Data
+* Image Retrieval Systems
+* Anomaly Detection in Images
+* Heatmaps
+* Loss Curves
+* Training and Validation Loss
+
 ### Outline
 This is the general outline I currently have for the plan for CS Research.\
 https://docs.google.com/document/d/17-IYpmrqE0HKDivBMHZIiV9BpNWg1-dO3UNp64TP-5A/edit#heading=h.lqkzgapjvm91
@@ -80,6 +91,9 @@ https://docs.google.com/document/d/1jyCNkPNPi46cjxJ8s3Vau9Eh5qat1DngavqQPdU4fZU/
 ### Potential Data
 I gathered a lot of potential data I can use here.\
 https://docs.google.com/document/d/15bKcaG3rvsBdYztuoyvrZNVk1f7BVaxxSHiR8Exsnhw/edit#heading=h.2kxi2um9ycqv
+
+### Data Evaluation Techniques
+https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/edit
 
 ### Research Paper Outline
 https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/edit
