@@ -69,7 +69,9 @@ Everything here is not necceasrily refrences I am using, it consists of both a b
 This is data of CT Scans that detected benign tumors, cancerous tumors, kidney stones, and cystic kidney disease.\
 https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 
-### Data Evaluations
+### Data Evaluations 
+* **ROC Curve and AUC**
+* **Confusion Matrix**
 * Binary Classification Images
 * Multi-Class Classification Images
 * Segmentation Masks
