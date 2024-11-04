@@ -70,16 +70,17 @@ This is data of CT Scans that detected benign tumors, cancerous tumors, kidney s
 https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 
 ### Data Evaluations 
+* **Classification**
 * **ROC Curve and AUC**
 * **Confusion Matrix**
+* **Loss and Accuracy**
+* **Loss Curves**
 * Binary Classification Images
-* Multi-Class Classification Images
 * Segmentation Masks
 * Time-Series or Video Data
 * Image Retrieval Systems
 * Anomaly Detection in Images
 * Heatmaps
-* Loss Curves
 * Training and Validation Loss
 
 ### Outline
