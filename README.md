@@ -75,13 +75,13 @@ https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 * **Confusion Matrix**
 * **Loss and Accuracy**
 * **Loss Curves**
-* Binary Classification Images
 * Segmentation Masks
-* Time-Series or Video Data
-* Image Retrieval Systems
+* Binary Classification Images
 * Anomaly Detection in Images
 * Heatmaps
 * Training and Validation Loss
+* Time-Series or Video Data
+* Image Retrieval Systems
 
 ### Outline
 This is the general outline I currently have for the plan for CS Research.\
