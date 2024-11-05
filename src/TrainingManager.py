@@ -1,8 +1,8 @@
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 import os
 
-from ModelManager import build_model
-from DataPreprocessingManager import load_data, preprocess_data
+from ModelManager import ModelManager
+from DataPreprocessingManager import DataPreprocessingManager
 
 class TrainingManager:
 
@@ -11,23 +11,26 @@ class TrainingManager:
         self.img_dir = img_dir
         self.epochs = epochs
 
-
-    def train_model(self, csv_path, img_dir, model_save_path='kidney_cnn_model.h5', epochs=50):
+    def train_model(self, model_save_path='kidney_cnn_model.h5', epochs=50):
         """
         Train the CNN model.
 
         Args:
-            csv_path (str): Path to the CSV file containing image paths and labels.
-            img_dir (str): Root directory where images are stored.
             model_save_path (str): Path to save the trained model.
             epochs (int): Number of epochs for training.
         """
-        # Load and preprocess data
-        images, labels = load_data(csv_path, img_dir)
-        train_generator, test_generator = preprocess_data(images, labels)
+        # Create an instance of DataPreprocessingManager
+        data_manager = DataPreprocessingManager(self.csv_path, self.img_dir, None, None)
         
-        # Build the model
-        model = build_model()
+        # Load and preprocess data
+        images, labels = data_manager.load_data(self.csv_path, self.img_dir)
+        train_generator, test_generator = data_manager.preprocess_data(images, labels)
+        
+        # Create an instance of ModelManager
+        model_manager = ModelManager()
+        
+        # Build the model using the instance
+        model = model_manager.build_model()
         
         # Define callbacks
         checkpoint = ModelCheckpoint(model_save_path, monitor='val_accuracy', save_best_only=True, verbose=1)
@@ -44,4 +47,3 @@ class TrainingManager:
         # Save the final model
         model.save(model_save_path)
         print(f"Model saved to {model_save_path}")
-        
