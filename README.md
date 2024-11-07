@@ -96,7 +96,7 @@ I gathered a lot of potential data I can use here.\
 https://docs.google.com/document/d/15bKcaG3rvsBdYztuoyvrZNVk1f7BVaxxSHiR8Exsnhw/edit#heading=h.2kxi2um9ycqv
 
 ### Data Evaluation Techniques
-https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/edit
+https://docs.google.com/document/d/1ngJYA3OKIGQwxbCOllXyy__cG3tgmlvzRmW8Um9FWUk/edit?tab=t.0
 
 ### Research Paper Outline
 https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/edit
