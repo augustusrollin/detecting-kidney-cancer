@@ -100,3 +100,6 @@ https://docs.google.com/document/d/1ngJYA3OKIGQwxbCOllXyy__cG3tgmlvzRmW8Um9FWUk/
 
 ### Research Paper Outline
 https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/edit
+
+### Research Paper
+https://docs.google.com/document/d/1SzHu7FbEYSOO1Dki7qQnN4yeB0jjaEUdCsiCMTO-I78/edit?tab=t.0
