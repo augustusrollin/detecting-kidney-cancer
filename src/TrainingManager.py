@@ -47,3 +47,5 @@ class TrainingManager:
         # Save the final model
         model.save(model_save_path)
         print(f"Model saved to {model_save_path}")
+    
+    

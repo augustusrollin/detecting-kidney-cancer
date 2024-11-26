@@ -97,3 +97,4 @@ class DataPreprocessingManager:
         test_generator = test_datagen.flow(X_test, y_test, batch_size=32)
 
         return train_generator, test_generator
+
