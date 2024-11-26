@@ -80,3 +80,4 @@ class EvaluationManager:
         plt.legend()
         plt.grid()
         plt.show()
+
