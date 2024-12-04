@@ -1,6 +1,7 @@
 # detecting-kidney-cancer
 
-The overall goal of this project is to detect kidney cancer. This is done by training a model on around 10,000 images and the results of that can then be stored and evaluated. 
+The overarching objective of this project is to develop, optimize, and validate a state-of-the-art machine learning model for the early detection of kidney cancer, advancing it to clinical readiness through a comprehensive, multi-phase process. This includes rigorous development, validation, and optimization to ensure the model meets the highest standards of clinical accuracy, reliability, and usability in real-world medical environments. By leveraging a robust dataset of approximately 10,000 high-quality medical images, the project aims to create an AI-powered diagnostic tool capable of providing accurate and actionable insights for clinicians, ultimately improving patient outcomes through early diagnosis and personalized treatment planning.
+
 
 ## Setup
 
@@ -19,12 +20,6 @@ pip install -r requirements.txt
 * Use less epochs when training the data, maybe get a cpu/gpu in order to make the training better
 * Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
 * Clean up the repo in general
-
-## Troubles
-* SSL Error
-* Downloading large quantities of data
-* Windows vs Mac
-* Venv
 
 ## Example Data
 
