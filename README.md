@@ -48,7 +48,8 @@ make train
 ```
 
 ## Details to evaluate the model
-The evaluation of the model bassically displays data to show how accurate the training was. It will create confusion matrices and show the overall percentages of the output. In order to train the model run the following command:
+The evaluation of the model bassically displays data to show how accurate the training was. It will create confusion matrices 
+classification, an ROC Curve and AUC, Loss and Accuracy curves, and classify everything.In order to train the model run the following command:
 ```zsh
 make evaluate
 ```
