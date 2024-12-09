@@ -65,20 +65,6 @@ Everything here is not necceasrily refrences I am using, it consists of both a b
 This is data of CT Scans that detected benign tumors, cancerous tumors, kidney stones, and cystic kidney disease.\
 https://www.kaggle.com/datasets/anima890/kidney-ct-scan
 
-### Data Evaluations 
-* **Classification**
-* **ROC Curve and AUC**
-* **Confusion Matrix**
-* **Loss and Accuracy**
-* **Loss Curves**
-* Segmentation Masks
-* Binary Classification Images
-* Anomaly Detection in Images
-* Heatmaps
-* Training and Validation Loss
-* Time-Series or Video Data
-* Image Retrieval Systems
-
 ### Outline
 This is the general outline I currently have for the plan for CS Research.\
 https://docs.google.com/document/d/17-IYpmrqE0HKDivBMHZIiV9BpNWg1-dO3UNp64TP-5A/edit#heading=h.lqkzgapjvm91
