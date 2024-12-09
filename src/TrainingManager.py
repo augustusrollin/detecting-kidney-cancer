@@ -20,6 +20,9 @@ class TrainingManager:
             epochs (int): Number of epochs for training.
         """
         # Create an instance of DataPreprocessingManager
+
+        print ("xxx")
+        
         data_manager = DataPreprocessingManager(self.csv_path, self.img_dir, None, None)
         
         # Load and preprocess data
