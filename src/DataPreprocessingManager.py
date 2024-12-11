@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.utils import to_categorical
-from PIL import Image
+import cv2
 import numpy as np
 
 class DataPreprocessingManager:
@@ -14,7 +14,6 @@ class DataPreprocessingManager:
         self.images = images
         self.labels = labels
 
-            
     def load_data(self, csv_path, img_dir, target_size=(128, 128)):
         """
         Load images and labels from the dataset.
@@ -41,12 +40,13 @@ class DataPreprocessingManager:
             img_path = os.path.join(self.img_dir, row['path'])
             
             try:
-                # Load and resize the image
-                img = Image.open(img_path).resize(self.target_size)
-                img_array = np.array(img)
-
+                # Load the image using OpenCV
+                img = cv2.imread(img_path)
+                # Resize the image
+                img = cv2.resize(img, target_size)
+                
                 # Normalize pixel values to the range [0, 1]
-                img_array = img_array / 255.0
+                img_array = img / 255.0
                 
                 # Append the image and label to the respective lists
                 images.append(img_array)
@@ -97,4 +97,3 @@ class DataPreprocessingManager:
         test_generator = test_datagen.flow(X_test, y_test, batch_size=32)
 
         return train_generator, test_generator
-

@@ -6,7 +6,6 @@ class ModelManager:
     def __init__(self):
         return
 
-
     @staticmethod
     def build_model(input_shape=(128, 128, 3), num_classes=4):
         """
@@ -39,7 +38,7 @@ class ModelManager:
             Flatten(),
             
             # Fully Connected Layer
-            Dense(256, activation='relu'),
+            Dense(256, activation='relu'),  
             Dropout(0.5),  # Dropout for regularization
             
             # Output Layer
@@ -50,4 +49,3 @@ class ModelManager:
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
         
         return model
-

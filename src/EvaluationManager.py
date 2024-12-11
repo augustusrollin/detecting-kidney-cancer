@@ -3,6 +3,7 @@ from sklearn.metrics import classification_report, confusion_matrix, roc_curve, 
 import numpy as np
 import matplotlib.pyplot as plt
 from DataPreprocessingManager import load_data, preprocess_data
+import cv2
 
 class EvaluationManager:
 
@@ -80,4 +81,3 @@ class EvaluationManager:
         plt.legend()
         plt.grid()
         plt.show()
-
