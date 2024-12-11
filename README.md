@@ -14,7 +14,7 @@ pip install -r requirements.txt
 ```
 
 ## TODO
-* Switch from pillow to opencv
+* Switch from pillow to opencv (4.0.0.21)/Scikit-Image(0.14.2)
 * Fix the model so that it trains off the data properly
 * Add sample data / csv that tests will automatically do
 * Figure out how to make the training more acurate (maybe label the data / annotate the data)
