@@ -5,4 +5,4 @@ numpy
 keras
 Pillow
 opencv-python==4.10.0.84
-scikit-image==0.14.2
+scikit-image==0.19.3    
