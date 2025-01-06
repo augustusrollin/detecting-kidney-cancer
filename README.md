@@ -87,7 +87,6 @@ https://docs.google.com/document/d/1NA_NqXS3aBjFXdRgnviKh4LZwhwwNswsaF5yXGZ71y8/
 ### Research Paper
 https://docs.google.com/document/d/1SzHu7FbEYSOO1Dki7qQnN4yeB0jjaEUdCsiCMTO-I78/edit?tab=t.0
 
-
 ### Other Resources
 https://blog.paperspace.com/top-ten-cloud-gpu-platforms-for-deep-learning/
 https://medium.com/data-folks-indonesia/5-best-free-image-annotation-tools-80919a4e49a8
