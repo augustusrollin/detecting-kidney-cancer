@@ -44,7 +44,7 @@ class TrainingManager:
             validation_data=test_generator,
             callbacks=[checkpoint, early_stopping]
         )
-        
+
         # Save the final model
         model.save(model_save_path)
         print(f"Model saved to {model_save_path}")
