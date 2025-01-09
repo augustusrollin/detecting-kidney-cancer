@@ -13,6 +13,10 @@ pip install -r requirements_dev.txt
 pip install -r requirements.txt
 ```
 
+## Install commands 
+```zsh
+pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org """package_name"""
+```
 ## TODO
 * Switch from pillow to opencv (4.0.0.21)/Scikit-Image(0.14.2)
 * Fix the model so that it trains off the data properly
