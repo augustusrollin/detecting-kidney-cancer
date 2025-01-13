@@ -17,6 +17,7 @@ pip install -r requirements.txt
 ```zsh
 pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org """package_name"""
 ```
+
 ## TODO
 * Switch from pillow to opencv (4.0.0.21)/Scikit-Image(0.14.2)
 * Fix the model so that it trains off the data properly
@@ -94,3 +95,4 @@ https://docs.google.com/document/d/1SzHu7FbEYSOO1Dki7qQnN4yeB0jjaEUdCsiCMTO-I78/
 ### Other Resources
 https://blog.paperspace.com/top-ten-cloud-gpu-platforms-for-deep-learning/
 https://medium.com/data-folks-indonesia/5-best-free-image-annotation-tools-80919a4e49a8
+https://github.com/Ajarn-Jamie/KiTS_Code
