@@ -19,8 +19,9 @@ pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org """pac
 ```
 
 ## TODO
-* Switch from pillow to opencv (4.0.0.21)/Scikit-Image(0.14.2)
 * Fix the model so that it trains off the data properly
+* Make sure all the packages are done properly
+* Make adjustments to the tests folder so it is functionable and good quality
 * Add sample data / csv that tests will automatically do
 * Figure out how to make the training more acurate (maybe label the data / annotate the data)
 * Use less epochs when training the data, maybe get a cpu/gpu in order to make the training better
