@@ -1,83 +1,80 @@
-from tensorflow.keras.models import load_model
-from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 import numpy as np
 import matplotlib.pyplot as plt
-from DataPreprocessingManager import load_data, preprocess_data
-import cv2
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc, accuracy_score
 
 class EvaluationManager:
-
-    def __init__(self, csv_path, img_dir):
-        self.csv_path = csv_path
-        self.img_dir = img_dir
-
-    def evaluate_model(self, model_path='kidney_cnn_model.h5', training_history=None):
+    def __init__(self, model, X_test, y_test):
         """
-        Evaluate the trained CNN model on the test set.
-
-        Args:
-            model_path (str): Path to the trained model.
-            training_history (dict): History object containing training and validation loss.
+        Initialize the evaluation manager with model, test data, and test labels.
         """
-        # Load and preprocess data
-        images, labels = load_data(self.csv_path, self.img_dir)
-        _, test_generator = preprocess_data(images, labels)
+        self.model = model
+        self.X_test = X_test
+        self.y_test = y_test
 
-        # Load the model
-        model = load_model(model_path)
-
-        # Evaluate the model
-        loss, accuracy = model.evaluate(test_generator)
-        print(f"Test Accuracy: {accuracy * 100:.2f}%")
-
-        # Predict the classes
-        predictions = model.predict(test_generator)
-        y_pred = np.argmax(predictions, axis=1)
-        y_true = np.argmax(test_generator.labels, axis=1)
-
-        # Print classification report
-        print("Classification Report:")
-        print(classification_report(y_true, y_pred, target_names=['Cyst', 'Normal', 'Stone', 'Tumor']))
-
-        # Print confusion matrix
+    def confusion_matrix(self):
+        """
+        Generate and plot the confusion matrix.
+        """
+        y_pred = self.model.predict(self.X_test)
+        cm = confusion_matrix(self.y_test, y_pred)
         print("Confusion Matrix:")
-        print(confusion_matrix(y_true, y_pred))
+        print(cm)
+        
+        plt.figure(figsize=(6, 6))
+        plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+        plt.title('Confusion Matrix')
+        plt.colorbar()
+        tick_marks = np.arange(len(np.unique(self.y_test)))
+        plt.xticks(tick_marks, np.unique(self.y_test), rotation=45)
+        plt.yticks(tick_marks, np.unique(self.y_test))
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+        plt.show()
 
-        # ROC Curve and AUC for the "Tumor" class
-        tumor_class_index = 3  # Adjust this index based on your class order
-        tumor_scores = predictions[:, tumor_class_index]  # Get scores for the "Tumor" class
-        fpr, tpr, thresholds = roc_curve(y_true == tumor_class_index, tumor_scores)
+    def classification_report(self):
+        """
+        Generate and print the classification report including precision, recall, and F1-score.
+        """
+        y_pred = self.model.predict(self.X_test)
+        report = classification_report(self.y_test, y_pred)
+        print("Classification Report:")
+        print(report)
+
+    def roc_curve(self):
+        """
+        Generate and plot the ROC curve.
+        """
+        y_prob = self.model.predict_proba(self.X_test)
+        fpr, tpr, _ = roc_curve(self.y_test, y_prob[:, 1])
         roc_auc = auc(fpr, tpr)
-
-        # Plot ROC curve
+        
         plt.figure()
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = {:.2f})'.format(roc_auc))
+        plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
         plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title('Receiver Operating Characteristic for Tumor Class')
+        plt.title('Receiver Operating Characteristic (ROC)')
         plt.legend(loc="lower right")
         plt.show()
 
-        # Plot Loss Curves if training history is provided
-        if training_history is not None:
-            self.plot_loss_curves(training_history)
-
-    def plot_loss_curves(self, history):
+    def accuracy(self):
         """
-        Plot training and validation loss curves.
-
-        Args:
-            history (dict): History object containing training and validation loss.
+        Print the accuracy of the model on the test set.
         """
-        plt.figure(figsize=(10, 5))
-        plt.plot(history['loss'], label='Training Loss')
-        plt.plot(history['val_loss'], label='Validation Loss')
-        plt.title('Loss Curves')
+        y_pred = self.model.predict(self.X_test)
+        acc = accuracy_score(self.y_test, y_pred)
+        print(f"Accuracy: {acc * 100:.2f}%")
+
+    def loss_curve(self, history):
+        """
+        Plot the loss curve from the model training history.
+        """
+        plt.plot(history.history['loss'], label='train')
+        plt.plot(history.history['val_loss'], label='val')
+        plt.title('Model Loss')
         plt.xlabel('Epochs')
         plt.ylabel('Loss')
         plt.legend()
-        plt.grid()
         plt.show()
