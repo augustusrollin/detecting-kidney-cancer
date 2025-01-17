@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from sklearn.model_selection import train_test_split
-from ModelManager import ModelManager
+from src.ModelManager import ModelManager
 from sklearn.metrics import accuracy_score
 
 # Create a small mock dataset for testing purposes
@@ -13,12 +13,14 @@ def mock_data():
     return X, y
 
 # Test to check if the model can be created successfully
+# @pytest.mark.skip(reason="takes a while to run")
 def test_model_creation():
     model_manager = ModelManager()
     model = model_manager.create_model()
     assert model is not None, "Model creation failed"
 
 # Test if the training process works
+# @pytest.mark.skip(reason="takes a while to run")
 def test_model_training(mock_data):
     X, y = mock_data
     model_manager = ModelManager()
@@ -39,6 +41,7 @@ def test_model_training(mock_data):
     assert len(model_predictions) == len(y_test), f"Expected {len(y_test)} predictions, got {len(model_predictions)}"
 
 # Test that the model training improves over epochs
+# @pytest.mark.skip(reason="takes a while to run")
 def test_training_improvement(mock_data):
     X, y = mock_data
     model_manager = ModelManager()
@@ -56,6 +59,7 @@ def test_training_improvement(mock_data):
     assert initial_accuracy > 0, "Model did not improve during training"
 
 # Test if the model is performing reasonably (accuracy > random chance)
+# @pytest.mark.skip(reason="takes a while to run")
 def test_model_performance(mock_data):
     X, y = mock_data
     model_manager = ModelManager()
@@ -74,6 +78,7 @@ def test_model_performance(mock_data):
     assert accuracy > random_accuracy, f"Model accuracy {accuracy} is lower than random chance"
 
 # Test edge case where input data has no features
+# @pytest.mark.skip(reason="takes a while to run")
 def test_empty_data():
     model_manager = ModelManager()
     
@@ -84,6 +89,7 @@ def test_empty_data():
         model_manager.train(X_empty, y_empty, epochs=5)
 
 # Test edge case where training data and labels do not match in size
+# @pytest.mark.skip(reason="takes a while to run")
 def test_mismatched_data_labels():
     model_manager = ModelManager()
     
