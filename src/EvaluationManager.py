@@ -23,7 +23,7 @@ class EvaluationManager:
         """
         y_pred = self._get_predictions()
         cm = confusion_matrix(self.y_test, y_pred)
-        
+
         plt.figure(figsize=(6, 6))
         plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
         plt.title('Confusion Matrix')
@@ -43,13 +43,16 @@ class EvaluationManager:
     def classification_report(self):
         """
         Generate and save the classification report to a text file.
+        Handles cases where precision/recall might be undefined.
         """
         y_pred = self._get_predictions()
-        report = classification_report(self.y_test, y_pred, output_dict=True)
-
-        report_str = classification_report(self.y_test, y_pred)
-        report_path = os.path.join(self.output_dir, "classification_report.txt")
         
+        # Handle zero-division warnings
+        report = classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
+        
+        report_str = classification_report(self.y_test, y_pred, zero_division=0)
+        report_path = os.path.join(self.output_dir, "classification_report.txt")
+
         with open(report_path, "w") as f:
             f.write(report_str)
 
@@ -58,14 +61,22 @@ class EvaluationManager:
 
     def roc_curve(self):
         """
-        Generate and save the ROC curve for binary classification.
+        Generate and save the ROC curve for binary or multi-class classification.
         """
         y_prob = self._get_probabilities()
-        
-        fpr, tpr, _ = roc_curve(self.y_test, y_prob[:, 1])
-        roc_auc = auc(fpr, tpr)
-        
-        plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+
+        if len(np.unique(self.y_test)) > 2:
+            # Multi-class ROC curve (One-vs-Rest)
+            for i in range(y_prob.shape[1]):
+                fpr, tpr, _ = roc_curve(self.y_test == i, y_prob[:, i])
+                roc_auc = auc(fpr, tpr)
+                plt.plot(fpr, tpr, lw=2, label=f'Class {i} (AUC = {roc_auc:.2f})')
+        else:
+            # Binary classification ROC curve
+            fpr, tpr, _ = roc_curve(self.y_test, y_prob[:, 1])
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+
         plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')

@@ -125,3 +125,4 @@ class ModelManager:
         Retrieve the stored training loss history.
         """
         return self.history
+    
