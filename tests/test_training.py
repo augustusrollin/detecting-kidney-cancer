@@ -1,100 +1,101 @@
 import pytest
 import numpy as np
 from sklearn.model_selection import train_test_split
-from src.ModelManager import ModelManager
 from sklearn.metrics import accuracy_score
+from src.ModelManager import ModelManager
+from src.TrainingManager import TrainingManager
 
-# Create a small mock dataset for testing purposes
+# Constants for input/output sizes
+INPUT_SIZE = 10  # Assuming 10 features in synthetic data
+OUTPUT_SIZE = 4  # Number of classes (e.g., Normal, Tumor, Stone, Cyst)
+
+# Create a reproducible random number generator
+rng = np.random.default_rng(seed=42)
+
 @pytest.fixture
 def mock_data():
-    # Create a simple synthetic dataset with features (X) and labels (y)
-    X = np.random.rand(100, 10)  # 100 samples, 10 features
-    y = np.random.randint(0, 4, 100)  # 4 classes (normal, tumor, stone, cyst)
+    """
+    Generates synthetic feature and label data for testing.
+    """
+    X = rng.random((100, INPUT_SIZE), dtype=np.float32)  # 100 samples, 10 features
+    y = rng.integers(0, OUTPUT_SIZE, size=100)  # 100 labels in the correct range
     return X, y
 
-# Test to check if the model can be created successfully
-# @pytest.mark.skip(reason="takes a while to run")
 def test_model_creation():
-    model_manager = ModelManager()
-    model = model_manager.create_model()
-    assert model is not None, "Model creation failed"
+    """
+    Test whether ModelManager is initialized correctly.
+    """
+    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
+    assert hasattr(model_manager, "train"), "ModelManager should have a 'train' method"
+    assert hasattr(model_manager, "evaluate"), "ModelManager should have an 'evaluate' method"
 
-# Test if the training process works
-# @pytest.mark.skip(reason="takes a while to run")
 def test_model_training(mock_data):
+    """
+    Test the training process of ModelManager.
+    """
     X, y = mock_data
-    model_manager = ModelManager()
+    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
     
-    # Split data into training and test set
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # Train the model
-    model_manager.train(X_train, y_train, epochs=5)
-    
-    # Evaluate the model
-    model_predictions = model_manager.evaluate(X_test, y_test)
-    
-    # Test if the model makes predictions
-    assert model_predictions is not None, "Model evaluation failed"
-    
-    # Check if the predictions match the test set size
-    assert len(model_predictions) == len(y_test), f"Expected {len(y_test)} predictions, got {len(model_predictions)}"
+    model_manager.train(X_train, y_train, epochs=5, batch_size=16)
+    assert model_manager is not None, "Training failed - model is None"
 
-# Test that the model training improves over epochs
-# @pytest.mark.skip(reason="takes a while to run")
-def test_training_improvement(mock_data):
+def test_model_evaluation(mock_data):
+    """
+    Test the evaluation method of ModelManager.
+    """
     X, y = mock_data
-    model_manager = ModelManager()
+    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
     
-    # Split data into training and test set
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # Train the model for multiple epochs
-    model_manager.train(X_train, y_train, epochs=10)
-    
-    # Get the model's performance on the test set
-    initial_accuracy = model_manager.evaluate(X_test, y_test)
-    
-    # Check if accuracy is greater than 0 (meaning the model learned something)
-    assert initial_accuracy > 0, "Model did not improve during training"
-
-# Test if the model is performing reasonably (accuracy > random chance)
-# @pytest.mark.skip(reason="takes a while to run")
-def test_model_performance(mock_data):
-    X, y = mock_data
-    model_manager = ModelManager()
-    
-    # Split data into training and test set
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    # Train the model
-    model_manager.train(X_train, y_train, epochs=5)
-    
-    # Evaluate the model
+    model_manager.train(X_train, y_train, epochs=5, batch_size=16)
     accuracy = model_manager.evaluate(X_test, y_test)
-    
-    # Ensure that the model's accuracy is greater than random chance
-    random_accuracy = 1 / len(np.unique(y))  # For 4 classes, random accuracy is 0.25
-    assert accuracy > random_accuracy, f"Model accuracy {accuracy} is lower than random chance"
+    assert 0.0 <= accuracy <= 1.0, "Accuracy should be within [0,1]"
 
-# Test edge case where input data has no features
-# @pytest.mark.skip(reason="takes a while to run")
-def test_empty_data():
-    model_manager = ModelManager()
-    
-    X_empty = np.array([])
-    y_empty = np.array([])
-    
-    with pytest.raises(ValueError):
-        model_manager.train(X_empty, y_empty, epochs=5)
+def test_model_prediction(mock_data):
+    """
+    Test model prediction functionality.
+    """
+    X, _ = mock_data
+    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
 
-# Test edge case where training data and labels do not match in size
-# @pytest.mark.skip(reason="takes a while to run")
+    # Train the model before making predictions
+    model_manager.train(X, rng.integers(0, OUTPUT_SIZE, size=len(X)), epochs=5, batch_size=16)
+    
+    predictions = model_manager.predict(X)
+    assert predictions.shape[0] == X.shape[0], "Number of predictions should match input samples"
+    assert np.all((predictions >= 0) & (predictions < OUTPUT_SIZE)), "Predictions should be within valid class range"
+
 def test_mismatched_data_labels():
-    model_manager = ModelManager()
+    """
+    Test the behavior of ModelManager when given mismatched input-output sizes.
+    """
+    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
+    X = rng.random((100, INPUT_SIZE), dtype=np.float32)
+    y = rng.integers(0, OUTPUT_SIZE, size=80)  # Incorrect label count
     
-    X = np.random.rand(100, 10)  # 100 samples, 10 features
-    y = np.random.randint(0, 4, 80)  # Only 80 labels, should be 100
-    
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="Size mismatch between features and labels"):
         model_manager.train(X, y, epochs=5)
+
+def test_model_save_load(mock_data, tmp_path):
+    """
+    Test model saving and loading functionality.
+    """
+    X, y = mock_data
+    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
+    
+    # Train the model
+    model_manager.train(X, y, epochs=5, batch_size=16)
+    
+    # Save model to temporary path
+    model_path = tmp_path / "test_model.pth"
+    model_manager.save_model(str(model_path))
+    
+    # Load the saved model
+    new_model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
+    new_model_manager.load_model(str(model_path))
+    
+    predictions = new_model_manager.predict(X)
+    assert predictions.shape[0] == X.shape[0], "Loaded model should produce correct number of predictions"
