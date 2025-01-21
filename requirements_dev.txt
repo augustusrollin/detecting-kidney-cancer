@@ -8,7 +8,8 @@ flake8-simplify
 flake8-bugbear 
 
 coverage==7.4.0
-isort
+isort==5.11.0
+
 
 pre-commit==3.6.0
 build>=1.0.3
