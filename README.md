@@ -96,7 +96,6 @@ https://docs.google.com/document/d/1SzHu7FbEYSOO1Dki7qQnN4yeB0jjaEUdCsiCMTO-I78/
 ### Other Resources
 https://blog.paperspace.com/top-ten-cloud-gpu-platforms-for-deep-learning/ \
 https://medium.com/data-folks-indonesia/5-best-free-image-annotation-tools-80919a4e49a8 \
-https://github.com/Ajarn-Jamie/KiTS_Code 
-
-### GPT Doc 
+https://github.com/Ajarn-Jamie/KiTS_Code \
+https://github.com/augustusrollin/InspiritAI/blob/main/Lessons/CNN_Day5.ipynb \
 https://docs.google.com/document/d/1Tx1Nnqm7ki4Canu_d0jXV3-eQWL9VbipSsSUl9sE2AA/edit?tab=t.0
