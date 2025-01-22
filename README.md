@@ -19,10 +19,12 @@ pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org """pac
 ```
 
 ## TODO
-* Fix the model so that it trains off the data properly
-* Make sure all the packages are done properly
-* Make adjustments to the tests folder so it is functionable and good quality
-* Add sample data / csv that tests will automatically do
+* Adjust test eval and train to make sure they access the data properly
+* Get all of the tests to pass
+* Improve the accuarcy, that will directly improve the graphs
+* Add sample data / csv that tests will automatically do when you run make sample or something
+
+## TODO (much later)
 * Figure out how to make the training more acurate (maybe label the data / annotate the data)
 * Use less epochs when training the data, maybe get a cpu/gpu in order to make the training better
 * Do reinforcment learning on the data (create synthetic data that is accurate in order to train the model in a better way)
