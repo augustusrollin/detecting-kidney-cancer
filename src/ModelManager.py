@@ -28,7 +28,7 @@ class ModelManager:
             nn.Linear(64, self.output_size)
         )
 
-    def train(self, X_train, y_train, X_val=None, y_val=None, epochs=10, batch_size=32):
+    def train(self, X_train, y_train, X_val=None, y_val=None, epochs=1500, batch_size=32):
         """
         Train the model using provided data with optional validation data.
         """
