@@ -19,6 +19,7 @@ pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org """pac
 ```
 
 ## TODO
+* 512 x 512 pixels for an image
 * Adjust test eval and train to make sure they access the data properly
 * Get all of the tests to pass
 * Improve the accuarcy, that will directly improve the graphs
