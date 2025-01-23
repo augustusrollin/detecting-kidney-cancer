@@ -16,7 +16,7 @@ class TrainingManager:
     def run_training(self, X, y):
         """
         Train and evaluate the model.
-        """
+        """ 
         # Split the data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         
