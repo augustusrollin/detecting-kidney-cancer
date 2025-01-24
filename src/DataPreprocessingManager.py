@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 import logging
 
 class DataPreprocessingManager:
-    def __init__(self, data_directory, image_size=(224, 224), normalize_range=(0, 1)):
+    def __init__(self, data_directory, image_size=(512, 512), normalize_range=(0, 1)):
         self.data_directory = data_directory
         self.image_size = image_size
         self.data = []
