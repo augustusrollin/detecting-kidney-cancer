@@ -2,6 +2,12 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc, accuracy_score
+import logging
+
+logger = logging.getLogger()
+logging.getLogger("neo4j").setLevel(
+    logging.INFO
+) 
 
 class EvaluationManager:
     def __init__(self, model, X_test, y_test, output_dir="evaluation_results"):
@@ -37,7 +43,7 @@ class EvaluationManager:
         save_path = os.path.join(self.output_dir, "confusion_matrix.png")
         plt.savefig(save_path)
         plt.close()
-        print(f"Confusion matrix saved at: {save_path}")
+        logger.info(f"Confusion matrix saved at: {save_path}")
         return cm
 
     def classification_report(self):
@@ -56,7 +62,7 @@ class EvaluationManager:
         with open(report_path, "w") as f:
             f.write(report_str)
 
-        print(f"Classification report saved at: {report_path}")
+        logger.info(f"Classification report saved at: {report_path}")
         return report
 
     def roc_curve(self):
@@ -86,7 +92,7 @@ class EvaluationManager:
         save_path = os.path.join(self.output_dir, "roc_curve.png")
         plt.savefig(save_path)
         plt.close()
-        print(f"ROC curve saved at: {save_path}")
+        logger.info(f"ROC curve saved at: {save_path}")
 
     def accuracy(self):
         """
@@ -94,7 +100,7 @@ class EvaluationManager:
         """
         y_pred = self._get_predictions()
         acc = accuracy_score(self.y_test, y_pred)
-        print(f"Accuracy: {acc * 100:.2f}%")
+        logger.info(f"Accuracy: {acc * 100:.2f}%")
         return acc
 
     def loss_curve(self, history):
@@ -112,9 +118,9 @@ class EvaluationManager:
             save_path = os.path.join(self.output_dir, "loss_curve.png")
             plt.savefig(save_path)
             plt.close()
-            print(f"Loss curve saved at: {save_path}")
+            logger.info(f"Loss curve saved at: {save_path}")
         else:
-            print("Loss history not available or incorrect format.")
+            logger.info("Loss history not available or incorrect format.")
 
     def _get_predictions(self):
         """
