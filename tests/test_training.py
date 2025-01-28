@@ -38,7 +38,7 @@ def test_model_training(mock_data):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    model_manager.train(X_train, y_train, epochs=500, batch_size=32)
+    model_manager.train(X_train, y_train, epochs=250, batch_size=32)
     assert model_manager is not None, "Training failed - model is None"
 
 def test_model_evaluation(mock_data):
@@ -50,7 +50,7 @@ def test_model_evaluation(mock_data):
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    model_manager.train(X_train, y_train, epochs=500, batch_size=32)
+    model_manager.train(X_train, y_train, epochs=250, batch_size=32)
     accuracy = model_manager.evaluate(X_test, y_test)
     assert 0.0 <= accuracy <= 1.0, "Accuracy should be within [0,1]"
 
@@ -62,7 +62,7 @@ def test_model_prediction(mock_data):
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
 
     # Train the model before making predictions
-    model_manager.train(X, rng.integers(0, OUTPUT_SIZE, size=len(X)), epochs=500, batch_size=32)
+    model_manager.train(X, rng.integers(0, OUTPUT_SIZE, size=len(X)), epochs=250, batch_size=32)
     
     predictions = model_manager.predict(X)
     assert predictions.shape[0] == X.shape[0], "Number of predictions should match input samples"
@@ -77,7 +77,7 @@ def test_mismatched_data_labels():
     y = rng.integers(0, OUTPUT_SIZE, size=80)  # Incorrect label count
     
     with pytest.raises(ValueError, match="Size mismatch between features and labels"):
-        model_manager.train(X, y, epochs=500)
+        model_manager.train(X, y, epochs=250)
 
 def test_model_save_load(mock_data, tmp_path):
     """
@@ -87,7 +87,7 @@ def test_model_save_load(mock_data, tmp_path):
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
     
     # Train the model
-    model_manager.train(X, y, epochs=500, batch_size=32)
+    model_manager.train(X, y, epochs=250, batch_size=32)
     
     # Save model to temporary path
     model_path = tmp_path / "test_model.pth"
