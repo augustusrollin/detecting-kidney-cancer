@@ -1,21 +1,36 @@
 import os
 import cv2
 import numpy as np
+import torch
+from torchvision import transforms
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 import logging
 
 class DataPreprocessingManager:
-    def __init__(self, data_directory, image_size=(512, 512), normalize_range=(0, 1)):
+    def __init__(self, data_directory, image_size=(512, 512), normalize_range=(0, 1), apply_augmentation=True):
         self.data_directory = data_directory
         self.image_size = image_size
         self.data = []
         self.labels = []
         self.normalize_range = normalize_range
+        self.apply_augmentation = apply_augmentation
         self.allowed_extensions = {'.jpg', '.jpeg', '.png'}
         
         # Setup logging
         logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+        # Define Data Augmentation (Albumentations)
+        self.augmentation = A.Compose([
+            A.HorizontalFlip(p=0.5),
+            A.Rotate(limit=30, p=0.5),
+            A.RandomBrightnessContrast(p=0.5),
+            A.GaussianBlur(blur_limit=3, p=0.2),
+            A.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),  # Standard ImageNet normalization
+            ToTensorV2()
+        ])
 
     def load_data(self):
         """
@@ -42,13 +57,18 @@ class DataPreprocessingManager:
                         
                         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
                         image = cv2.resize(image, self.image_size)
+
+                        # Apply data augmentation
+                        if self.apply_augmentation:
+                            image = self.augmentation(image=image)['image']
+
                         self.data.append(image)
                         self.labels.append(category)
                     except Exception as e:
                         logging.error(f"Error loading image {image_path}: {e}")
         
         # Convert lists to NumPy arrays
-        self.data = np.array(self.data, dtype=np.float32)
+        self.data = np.array(self.data)
         self.labels = np.array(self.labels)
         
         logging.info(f"Data loading completed. Loaded {len(self.data)} images.")
@@ -59,14 +79,10 @@ class DataPreprocessingManager:
         """
         logging.info("Starting data preprocessing...")
         
-        # Normalize the image data to the specified range
-        min_val, max_val = self.normalize_range
-        self.data = (self.data / 255.0) * (max_val - min_val) + min_val
-        
         # Encode labels to integers using LabelEncoder
         label_encoder = LabelEncoder()
         self.labels = label_encoder.fit_transform(self.labels)
-        
+
         logging.info("Preprocessing completed.")
         return self.data, self.labels
 
@@ -80,3 +96,4 @@ class DataPreprocessingManager:
         )
         logging.info(f"Data split: {len(X_train)} train samples, {len(X_test)} test samples")
         return X_train, X_test, y_train, y_test
+    
