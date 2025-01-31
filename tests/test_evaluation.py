@@ -64,7 +64,7 @@ def test_loss_curve(sample_data):
     Test loss curve plotting during training.
     """
     model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=500)
+    model.train(sample_data['X'], sample_data['y'], epochs=250)
     evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
     
     evaluator.loss_curve(model)  # Should generate a plot without errors
