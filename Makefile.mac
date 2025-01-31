@@ -56,4 +56,7 @@ train:
 evaluate:
 	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/test_evaluation.py
 
+data-aug:
+	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/test_data_distribution.py
+
 detect: train evaluate
