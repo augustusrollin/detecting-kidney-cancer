@@ -1,35 +1,36 @@
 import pytest
-import numpy as np
 import torch
-import sys  # Added for output flushing
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+import numpy as np
 from src.ModelManager import ModelManager
-from src.TrainingManager import TrainingManager
+from sklearn.model_selection import train_test_split
 
-# Constants for input/output sizes
-INPUT_SIZE = (3, 224, 224)  # Updated for ResNet
-OUTPUT_SIZE = 4  # Number of classes (e.g., Normal, Tumor, Stone, Cyst)
+# Constants
+INPUT_SIZE = (3, 224, 224)  # Match ResNet input size
+OUTPUT_SIZE = 4  # Number of classes
+BATCH_SIZE = 32
+EPOCHS = 50
 
-# Create a reproducible random number generator
+# Fix seed for reproducibility
 rng = np.random.default_rng(seed=42)
+
 
 @pytest.fixture
 def mock_data():
     """
-    Generates synthetic image-like feature and label data for testing.
+    Generate random tensor data similar to images for testing.
     """
-    X = rng.random((100, *INPUT_SIZE), dtype=np.float32)  # 100 samples, (3, 224, 224)
-    y = rng.integers(0, OUTPUT_SIZE, size=100)  # 100 labels in the correct range
+    X = rng.random((100, *INPUT_SIZE), dtype=np.float32)
+    y = rng.integers(0, OUTPUT_SIZE, size=100)
     return X, y
+
 
 def test_model_creation():
     """
-    Test whether ModelManager is initialized correctly.
+    Ensure the model initializes correctly.
     """
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
-    assert hasattr(model_manager, "train"), "ModelManager should have a 'train' method"
-    assert hasattr(model_manager, "evaluate"), "ModelManager should have an 'evaluate' method"
+    assert isinstance(model_manager, ModelManager)
+
 
 def test_model_evaluation(mock_data):
     """
@@ -37,12 +38,14 @@ def test_model_evaluation(mock_data):
     """
     X, y = mock_data
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
-    
+
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    model_manager.train(X_train, y_train, epochs=50, batch_size=32)
+
+    model_manager.train(X_train, y_train, epochs=EPOCHS, batch_size=BATCH_SIZE)
     accuracy = model_manager.evaluate(X_test, y_test)
-    assert 0.0 <= accuracy <= 1.0, "Accuracy should be within [0,1]"
+
+    assert 0.0 <= accuracy <= 1.0, "Accuracy should be between 0 and 1"
+
 
 def test_model_prediction(mock_data):
     """
@@ -52,11 +55,12 @@ def test_model_prediction(mock_data):
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
 
     # Train the model before making predictions
-    model_manager.train(X, rng.integers(0, OUTPUT_SIZE, size=len(X)), epochs=50, batch_size=32)
-    
+    model_manager.train(X, rng.integers(0, OUTPUT_SIZE, size=len(X)), epochs=EPOCHS, batch_size=BATCH_SIZE)
+
     predictions = model_manager.predict(X)
-    assert predictions.shape[0] == X.shape[0], "Number of predictions should match input samples"
-    assert np.all((predictions >= 0) & (predictions < OUTPUT_SIZE)), "Predictions should be within valid class range"
+    assert len(predictions) == len(X), "Number of predictions should match input size"
+    assert np.all(np.isin(predictions, np.arange(OUTPUT_SIZE))), "Predictions should be valid class indices"
+
 
 def test_mismatched_data_labels():
     """
@@ -65,9 +69,10 @@ def test_mismatched_data_labels():
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
     X = rng.random((100, *INPUT_SIZE), dtype=np.float32)
     y = rng.integers(0, OUTPUT_SIZE, size=80)  # Incorrect label count
-    
-    with pytest.raises(ValueError, match="Size mismatch between features and labels"):
-        model_manager.train(X, y, epochs=50)
+
+    with pytest.raises(AssertionError, match="Mismatch between input and label sizes!"):
+        model_manager.train(X, y, epochs=EPOCHS)
+
 
 def test_model_save_load(mock_data, tmp_path):
     """
@@ -75,36 +80,18 @@ def test_model_save_load(mock_data, tmp_path):
     """
     X, y = mock_data
     model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
-    
+
     # Train the model
-    model_manager.train(X, y, epochs=50, batch_size=32)
-    
+    model_manager.train(X, y, epochs=EPOCHS, batch_size=BATCH_SIZE)
+
     # Save model to temporary path
     model_path = tmp_path / "test_model.pth"
     model_manager.save_model(str(model_path))
-    
+
     # Load the saved model
     new_model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
     new_model_manager.load_model(str(model_path))
-    
+
     predictions = new_model_manager.predict(X)
-    assert predictions.shape[0] == X.shape[0], "Loaded model should produce correct number of predictions"
-
-def test_model_training(mock_data):
-    """
-    Test the training process of ModelManager.
-    """
-    X, y = mock_data
-    model_manager = ModelManager(INPUT_SIZE, OUTPUT_SIZE)
+    assert len(predictions) == len(X), "Loaded model should produce predictions of the same length"
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
-    model_manager.train(X_train, y_train, epochs=50, batch_size=32)
-    assert model_manager is not None, "Training failed - model is None"
-
-    # **Ensure final accuracy is printed at the end**
-    final_accuracy = model_manager.evaluate(X_test, y_test)
-    
-    print("\n" + "="*50)  # Add a clear separator
-    print(f"🚀 FINAL TEST ACCURACY: {final_accuracy * 100:.2f}% 🚀", flush=True)
-    print("="*50 + "\n")

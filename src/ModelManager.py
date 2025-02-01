@@ -4,6 +4,7 @@ import torch.optim as optim
 import torchvision.models as models
 from torchvision.models import ResNet50_Weights
 
+
 class ModelManager:
     def __init__(self, input_shape, output_size, device=None):
         """
@@ -19,7 +20,7 @@ class ModelManager:
         self.criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
 
-    def train(self, X_train, y_train, epochs=250, batch_size=32):
+    def train(self, X_train, y_train, epochs=50, batch_size=32):
         """
         Trains the model.
         """
@@ -29,8 +30,13 @@ class ModelManager:
         if len(X_train.shape) != 4 or X_train.shape[1:] != (3, 224, 224):
             raise ValueError(f"Expected input shape (batch, 3, 224, 224), but got {X_train.shape}")
 
+        y_train = torch.tensor(y_train, dtype=torch.long)
+
+        # Ensure data size matches
+        assert len(X_train) == len(y_train), "Mismatch between input and label sizes!"
+
         X_train = X_train.to(self.device)
-        y_train = torch.tensor(y_train, dtype=torch.long).to(self.device)
+        y_train = y_train.to(self.device)
 
         dataset = torch.utils.data.TensorDataset(X_train, y_train)
         dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -63,6 +69,19 @@ class ModelManager:
 
         accuracy = (predictions == y_test).float().mean().item()
         return accuracy
+
+    def predict(self, X):
+        """
+        Makes predictions using the trained model.
+        """
+        self.model.eval()
+        X = torch.tensor(X, dtype=torch.float32).to(self.device)
+
+        with torch.no_grad():
+            outputs = self.model(X)
+            _, predictions = torch.max(outputs, 1)
+
+        return predictions.cpu().numpy()
 
     def save_model(self, path):
         torch.save(self.model.state_dict(), path)
