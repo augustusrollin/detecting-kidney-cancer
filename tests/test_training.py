@@ -94,4 +94,3 @@ def test_model_save_load(mock_data, tmp_path):
 
     predictions = new_model_manager.predict(X)
     assert len(predictions) == len(X), "Loaded model should produce predictions of the same length"
-    
