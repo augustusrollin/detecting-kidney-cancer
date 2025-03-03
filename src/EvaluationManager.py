@@ -151,3 +151,4 @@ class EvaluationManager:
                 return torch.softmax(outputs, dim=1).numpy()
         else:
             raise ValueError("Model must have a predict_proba() or forward() method.")
+    
