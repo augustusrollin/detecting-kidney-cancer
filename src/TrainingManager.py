@@ -27,3 +27,4 @@ class TrainingManager:
         accuracy = self.model_manager.evaluate(X_test, y_test)
         
         return self.model_manager, accuracy
+    
