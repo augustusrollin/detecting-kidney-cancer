@@ -59,4 +59,7 @@ evaluate:
 data-aug:
 	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/test_data_distribution.py
 
+pipeline:
+	@ PYTHONPATH=".:src/:tests/" pytest -s -rPx tests/test_pipeline.py
+
 detect: train evaluate

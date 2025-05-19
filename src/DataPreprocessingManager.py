@@ -32,6 +32,23 @@ class DataPreprocessingManager:
             ToTensorV2()
         ])
 
+    def _load_single_image(self, image_path):
+        """
+        Load and process a single image.
+        """
+        image = cv2.imread(image_path)
+        if image is None:
+            logging.warning(f"Skipping unreadable image: {image_path}")
+            return None
+            
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, self.image_size)
+        
+        if self.apply_augmentation:
+            image = self.augmentation(image=image)['image']
+            
+        return image
+
     def load_data(self):
         """
         Loads images and corresponding labels from the dataset directory.
@@ -43,31 +60,22 @@ class DataPreprocessingManager:
         for category in categories:
             category_path = os.path.join(self.data_directory, category)
             
-            if os.path.isdir(category_path):
-                for image_name in os.listdir(category_path):
-                    if not any(image_name.lower().endswith(ext) for ext in self.allowed_extensions):
-                        continue  # Skip non-image files
+            if not os.path.isdir(category_path):
+                continue
+                
+            for image_name in os.listdir(category_path):
+                if not any(image_name.lower().endswith(ext) for ext in self.allowed_extensions):
+                    continue
                     
-                    image_path = os.path.join(category_path, image_name)
-                    try:
-                        image = cv2.imread(image_path)
-                        if image is None:
-                            logging.warning(f"Skipping unreadable image: {image_path}")
-                            continue
-                        
-                        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB
-                        image = cv2.resize(image, self.image_size)
-
-                        # Apply data augmentation
-                        if self.apply_augmentation:
-                            image = self.augmentation(image=image)['image']
-
+                image_path = os.path.join(category_path, image_name)
+                try:
+                    image = self._load_single_image(image_path)
+                    if image is not None:
                         self.data.append(image)
                         self.labels.append(category)
-                    except Exception as e:
-                        logging.error(f"Error loading image {image_path}: {e}")
+                except Exception as e:
+                    logging.error(f"Error loading image {image_path}: {e}")
         
-        # Convert lists to NumPy arrays
         self.data = np.array(self.data)
         self.labels = np.array(self.labels)
         
