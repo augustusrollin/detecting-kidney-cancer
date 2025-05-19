@@ -133,12 +133,9 @@ class ModelManager:
         torch.save(self.model.state_dict(), path)
 
     def load_model(self, path):
-<<<<<<< HEAD
         """Load model state from path."""
         self.model.load_state_dict(
             torch.load(path, map_location=self.device)
         )
-=======
         self.model.load_state_dict(torch.load(path, map_location=self.device))
     
->>>>>>> 2fa7459059bb3f654fc8a9441228aad3ee43fe3f
