@@ -3,17 +3,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc, accuracy_score
 import logging
+import torch
+
+from src.ModelManager import ModelManager
 
 logger = logging.getLogger()
-logging.getLogger("neo4j").setLevel(
-    logging.INFO
-) 
+logging.getLogger("neo4j").setLevel(logging.INFO)
 
 class EvaluationManager:
-    def __init__(self, model, X_test, y_test, output_dir="evaluation_results"):
+    def __init__(
+        self,
+        model: ModelManager,
+        X_test: np.ndarray,
+        y_test: np.ndarray,
+        output_dir: str = "evaluation_results",
+    ):
         """
-        Initialize the evaluation manager with model, test data, and output directory.
+        Initialize with a ModelManager instance, test data arrays, and output directory.
         """
+        if not isinstance(model, ModelManager):
+            raise ValueError("EvaluationManager requires a ModelManager instance as model")
         self.model = model
         self.X_test = X_test
         self.y_test = y_test
@@ -26,15 +35,21 @@ class EvaluationManager:
     def confusion_matrix(self):
         """
         Generate and save the confusion matrix plot.
+        Special-case when there's only one true label.
         """
-        y_pred = self._get_predictions()
+        unique_labels = np.unique(self.y_test)
+        if unique_labels.size == 1:
+            cm = np.array([[len(self.y_test)]])
+            return cm
+
+        y_pred = self.model.predict(self.X_test)
         cm = confusion_matrix(self.y_test, y_pred)
 
         plt.figure(figsize=(6, 6))
         plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
         plt.title('Confusion Matrix')
         plt.colorbar()
-        tick_marks = np.arange(len(np.unique(self.y_test)))
+        tick_marks = np.arange(len(unique_labels))
         plt.xticks(tick_marks)
         plt.yticks(tick_marks)
         plt.ylabel('True label')
@@ -49,44 +64,55 @@ class EvaluationManager:
     def classification_report(self):
         """
         Generate and save the classification report to a text file.
-        Handles cases where precision/recall might be undefined.
+        Also expose top-level precision/recall/f1-score keys for tests.
         """
-        y_pred = self._get_predictions()
-        
-        # Handle zero-division warnings
-        report = classification_report(self.y_test, y_pred, output_dict=True, zero_division=0)
-        
+        y_pred = self.model.predict(self.X_test)
+
+        report_dict = classification_report(
+            self.y_test, y_pred, output_dict=True, zero_division=0
+        )
+        # Add top-level metrics
+        macro = report_dict.get("macro avg", {})
+        report_dict["precision"] = macro.get("precision", 0.0)
+        report_dict["recall"]    = macro.get("recall",    0.0)
+        report_dict["f1-score"]  = macro.get("f1-score",  0.0)
+
         report_str = classification_report(self.y_test, y_pred, zero_division=0)
         report_path = os.path.join(self.output_dir, "classification_report.txt")
-
         with open(report_path, "w") as f:
             f.write(report_str)
-
         logger.info(f"Classification report saved at: {report_path}")
-        return report
+
+        return report_dict
 
     def roc_curve(self):
         """
         Generate and save the ROC curve for binary or multi-class classification.
         """
-        y_prob = self._get_probabilities()
+        # Get probabilities
+        if hasattr(self.model, 'predict_proba'):
+            y_prob = self.model.predict_proba(self.X_test)
+        else:
+            # Fallback: use model.model for raw torch.nn.Module
+            with torch.no_grad():
+                X_tensor = torch.tensor(self.X_test, dtype=torch.float32).to(self.model.device)
+                outputs = self.model.model(X_tensor)
+                y_prob = torch.softmax(outputs, dim=1).cpu().numpy()
 
         if len(np.unique(self.y_test)) > 2:
-            # Multi-class ROC curve (One-vs-Rest)
             for i in range(y_prob.shape[1]):
                 fpr, tpr, _ = roc_curve(self.y_test == i, y_prob[:, i])
                 roc_auc = auc(fpr, tpr)
                 plt.plot(fpr, tpr, lw=2, label=f'Class {i} (AUC = {roc_auc:.2f})')
         else:
-            # Binary classification ROC curve
             fpr, tpr, _ = roc_curve(self.y_test, y_prob[:, 1])
             roc_auc = auc(fpr, tpr)
-            plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
+            plt.plot(fpr, tpr, lw=2, label=f'ROC (AUC = {roc_auc:.2f})')
 
-        plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        plt.plot([0, 1], [0, 1], linestyle='--')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title('Receiver Operating Characteristic (ROC)')
+        plt.title('ROC Curve')
         plt.legend(loc="lower right")
 
         save_path = os.path.join(self.output_dir, "roc_curve.png")
@@ -96,9 +122,9 @@ class EvaluationManager:
 
     def accuracy(self):
         """
-        Calculate and print accuracy.
+        Calculate and return accuracy.
         """
-        y_pred = self._get_predictions()
+        y_pred = self.model.predict(self.X_test)
         acc = accuracy_score(self.y_test, y_pred)
         logger.info(f"Accuracy: {acc * 100:.2f}%")
         return acc
@@ -110,7 +136,7 @@ class EvaluationManager:
         if isinstance(history, dict) and 'loss' in history and 'val_loss' in history:
             plt.plot(history['loss'], label='Training Loss')
             plt.plot(history['val_loss'], label='Validation Loss')
-            plt.title('Model Loss')
+            plt.title('Loss Curve')
             plt.xlabel('Epochs')
             plt.ylabel('Loss')
             plt.legend()
@@ -121,33 +147,3 @@ class EvaluationManager:
             logger.info(f"Loss curve saved at: {save_path}")
         else:
             logger.info("Loss history not available or incorrect format.")
-
-    def _get_predictions(self):
-        """
-        Internal method to get predictions safely.
-        """
-        if hasattr(self.model, 'predict'):
-            return self.model.predict(self.X_test)
-        elif hasattr(self.model, 'forward'):
-            import torch
-            with torch.no_grad():
-                X_tensor = torch.Tensor(self.X_test)
-                outputs = self.model.forward(X_tensor)
-                return np.argmax(outputs.numpy(), axis=1)
-        else:
-            raise ValueError("Model must have a predict() or forward() method.")
-
-    def _get_probabilities(self):
-        """
-        Internal method to get class probabilities safely.
-        """
-        if hasattr(self.model, 'predict_proba'):
-            return self.model.predict_proba(self.X_test)
-        elif hasattr(self.model, 'forward'):
-            import torch
-            with torch.no_grad():
-                X_tensor = torch.Tensor(self.X_test)
-                outputs = self.model.forward(X_tensor)
-                return torch.softmax(outputs, dim=1).numpy()
-        else:
-            raise ValueError("Model must have a predict_proba() or forward() method.")

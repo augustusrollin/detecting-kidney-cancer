@@ -1,5 +1,6 @@
-import pytest
+import os
 import numpy as np
+import pytest
 from src.EvaluationManager import EvaluationManager
 from src.ModelManager import ModelManager
 
@@ -8,111 +9,123 @@ def sample_data():
     """
     Fixture to generate sample data for evaluation tests.
     """
-    np.random.seed(42)
-    X = np.random.rand(100, 2).astype(np.float32)  # 100 samples, 2 features
-    y = np.random.randint(0, 2, 100)  # Binary classification labels (0 or 1)
+    rng = np.random.default_rng(42)
+    X = rng.random((100, 2), dtype=np.float32)
+    y = rng.integers(0, 2, 100)
     return {'X': X, 'y': y}
 
-def test_confusion_matrix(sample_data):
+@pytest.fixture
+def eval_manager(tmp_path, sample_data):
     """
-    Test confusion matrix generation and correctness.
+    Fixture to train a simple model and return an EvaluationManager with a temp output dir.
     """
-    model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=1)
-    evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
-    
-    cm = evaluator.confusion_matrix()
-    assert cm.shape == (2, 2), "Confusion matrix should have shape (2,2)"
-    assert cm.sum() == 100, "Total samples in confusion matrix should match dataset size"
+    # Train a simple tabular model
+    model_mgr = ModelManager(input_size=2, output_size=2)
+    model_mgr.train(sample_data['X'], sample_data['y'], epochs=1)
 
-def test_classification_report(sample_data):
-    """
-    Test classification report generation.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=1)
-    evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
-    
+    # Create a fresh output directory
+    out_dir = tmp_path / "eval_results"
+    out_dir.mkdir()
+
+    # Initialize evaluator with this output directory
+    evaluator = EvaluationManager(
+        model=model_mgr,
+        X_test=sample_data['X'],
+        y_test=sample_data['y'],
+        output_dir=str(out_dir)
+    )
+    return evaluator, out_dir
+
+def test_confusion_matrix_files(eval_manager):
+    evaluator, out_dir = eval_manager
+    cm = evaluator.confusion_matrix()
+
+    # Check shape and sum
+    assert cm.shape == (2, 2)
+    assert cm.sum() == 100
+
+    # Verify file exists
+    cm_path = out_dir / "confusion_matrix.png"
+    assert cm_path.exists(), "Confusion matrix image not saved"
+
+def test_classification_report_files(eval_manager):
+    evaluator, out_dir = eval_manager
     report = evaluator.classification_report()
-    assert 'precision' in report, "Classification report should contain precision"
-    assert 'recall' in report, "Classification report should contain recall"
-    assert 'f1-score' in report, "Classification report should contain F1-score"
 
-def test_roc_curve(sample_data):
-    """
-    Test ROC curve generation.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=1)
-    evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
-    
-    evaluator.roc_curve()  # Should generate a plot without errors
+    # Check top-level keys
+    assert 'precision' in report
+    assert 'recall' in report
+    assert 'f1-score' in report
 
-def test_accuracy(sample_data):
-    """
-    Test accuracy calculation and expected range.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=1)
-    evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
-    
+    # Verify text file exists
+    rpt_path = out_dir / "classification_report.txt"
+    assert rpt_path.exists(), "Classification report text not saved"
+
+def test_roc_curve_file(eval_manager):
+    evaluator, out_dir = eval_manager
+    evaluator.roc_curve()
+
+    roc_path = out_dir / "roc_curve.png"
+    assert roc_path.exists(), "ROC curve image not saved"
+
+def test_accuracy_and_range(eval_manager):
+    evaluator, _ = eval_manager
     acc = evaluator.accuracy()
-    assert 0.0 <= acc <= 1.0, "Accuracy should be between 0 and 1"
+    assert isinstance(acc, float)
+    assert 0.0 <= acc <= 1.0
 
-def test_loss_curve(sample_data):
-    """
-    Test loss curve plotting during training.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=250)
-    evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
-    
-    evaluator.loss_curve(model)  # Should generate a plot without errors
+def test_loss_curve_file(tmp_path, sample_data):
+    model_mgr = ModelManager(input_size=2, output_size=2)
+    model_mgr.train(sample_data['X'], sample_data['y'], epochs=1)
+    out_dir = tmp_path / "loss_results"
+    out_dir.mkdir()
+    evaluator = EvaluationManager(
+        model=model_mgr,
+        X_test=sample_data['X'],
+        y_test=sample_data['y'],
+        output_dir=str(out_dir)
+    )
 
-def test_confusion_matrix_all_same_class(sample_data):
-    """
-    Test confusion matrix when the model predicts only one class.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    
-    # Force model to predict only class '0'
-    sample_data['y'][:] = 0  
-    model.train(sample_data['X'], sample_data['y'], epochs=1)
-    
-    evaluator = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
+    history = {'loss': [1.0, 0.5], 'val_loss': [0.8, 0.3]}
+    evaluator.loss_curve(history)
+
+    loss_path = out_dir / "loss_curve.png"
+    assert loss_path.exists(), "Loss curve image not saved"
+
+def test_confusion_matrix_all_same_class_file(eval_manager):
+    evaluator, out_dir = eval_manager
+    # Overwrite y_test to a single class and recompute
+    evaluator.y_test = np.zeros_like(evaluator.y_test)
+
     cm = evaluator.confusion_matrix()
-    
-    assert cm[0, 0] == len(sample_data['y']), "All predictions should fall into one class"
+    assert cm.shape == (1, 1)
+    assert cm[0, 0] == len(evaluator.y_test)
 
-def test_accuracy_random_predictions(sample_data):
-    """
-    Test accuracy with random predictions to check evaluation limits.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    np.random.seed(42)
-    random_y = np.random.randint(0, 2, len(sample_data['y']))  # Random binary predictions
-    evaluator = EvaluationManager(model.model, sample_data['X'], random_y)
-    
+    # No file saved when only one class
+    cm_path = out_dir / "confusion_matrix.png"
+    assert not cm_path.exists(), "Confusion matrix should not be saved for single-class case"
+
+def test_accuracy_random_predictions(eval_manager):
+    evaluator, _ = eval_manager
+    rng = np.random.default_rng(0)
+    random_y = rng.integers(0, 2, evaluator.y_test.shape)
+    evaluator.y_test = random_y
     acc = evaluator.accuracy()
-    assert acc < 1.0, "Accuracy should not be 100% with random predictions"
+    assert acc < 1.0
 
-def test_model_persistence(sample_data, tmp_path):
-    """
-    Test model save/load functionality and accuracy consistency.
-    """
-    model = ModelManager(input_size=2, output_size=2)
-    model.train(sample_data['X'], sample_data['y'], epochs=1)
-    
-    model_path = tmp_path / "test_model.pth"
-    model.save_model(str(model_path))
-    
-    new_model = ModelManager(input_size=2, output_size=2)
-    new_model.load_model(str(model_path))
-    
-    evaluator = EvaluationManager(new_model.model, sample_data['X'], sample_data['y'])
-    acc1 = evaluator.accuracy()
-    
-    evaluator_new = EvaluationManager(model.model, sample_data['X'], sample_data['y'])
-    acc2 = evaluator_new.accuracy()
-    
-    assert np.isclose(acc1, acc2, atol=1e-5), "Accuracy should remain the same after loading the model"
+def test_model_persistence_file(eval_manager, tmp_path):
+    evaluator, out_dir = eval_manager
+    model_path = tmp_path / "model_test.pth"
+    evaluator.model.save_model(str(model_path))
+
+    new_mgr = ModelManager(input_size=2, output_size=2)
+    new_mgr.load_model(str(model_path))
+    new_eval = EvaluationManager(
+        model=new_mgr,
+        X_test=evaluator.X_test,
+        y_test=evaluator.y_test,
+        output_dir=str(out_dir)
+    )
+    acc1 = new_eval.accuracy()
+    acc2 = evaluator.accuracy()
+    assert np.isclose(acc1, acc2, atol=1e-5)
