@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.models as models
 from torchvision.models import ResNet50_Weights
-
+from torch.cuda.amp import autocast, GradScaler
 
 class ModelManager:
     def __init__(self, input_size, output_size, device=None):
@@ -63,10 +63,11 @@ class ModelManager:
                 )
         return X_tensor
 
-    def train(self, X_train, y_train, epochs=50, batch_size=32):
+    def train(self, X_train, y_train, epochs=3, batch_size=32):
         """
         Train the model on provided data.
         """
+
         X_tensor = self._validate_input(X_train).to(self.device)
         y_tensor = torch.tensor(y_train, dtype=torch.long).to(self.device)
 
@@ -78,18 +79,20 @@ class ModelManager:
             dataset, batch_size=batch_size, shuffle=True, num_workers=2
         )
 
+        scaler = GradScaler()
         self.model.train()
         for epoch in range(epochs):
             total_loss = 0.0
             for inputs, labels in dataloader:
                 self.optimizer.zero_grad()
-                outputs = self.model(inputs)
-                loss = self.criterion(outputs, labels)
-                loss.backward()
-                self.optimizer.step()
-                total_loss += loss.item()
-            if epoch % 10 == 0:
-                print(f"Epoch {epoch+1}/{epochs}, Loss: {total_loss:.4f}")
+                # Forward/backward under autocast
+                with autocast(enabled=(self.device != "cpu")):
+                    outputs = self.model(inputs)
+                    loss = self.criterion(outputs, labels)
+                scaler.scale(loss).backward()
+                scaler.step(self.optimizer)
+                scaler.update()
+                print(f"Epoch {epoch+1}/{epochs}, Avg Loss: {total_loss/len(dataloader):.4f}")
 
     def evaluate(self, X_test, y_test):
         """
@@ -134,8 +137,5 @@ class ModelManager:
 
     def load_model(self, path):
         """Load model state from path."""
-        self.model.load_state_dict(
-            torch.load(path, map_location=self.device)
-        )
         self.model.load_state_dict(torch.load(path, map_location=self.device))
     

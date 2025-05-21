@@ -52,7 +52,7 @@ class PipelineManager:
     def run(
         self,
         batch_size: int = 32,
-        epochs: int = 50,
+        epochs: int = 3,
         test_size: float = 0.2,
         output_dir: str = "evaluation_results",
     ) -> Tuple[ModelManager, float]:
@@ -130,7 +130,7 @@ class PipelineManager:
         parser.add_argument(
             "--epochs",
             type=int,
-            default=50,
+            default=3,
             help="Number of training epochs.",
         )
         parser.add_argument(
@@ -163,3 +163,42 @@ class PipelineManager:
             output_dir=args.output_dir,
         )
         print(f"Test accuracy: {test_acc:.2%}")
+
+    def run_on_arrays(
+        self,
+        X_train: np.ndarray,
+        y_train: np.ndarray,
+        X_test:  np.ndarray,
+        y_test:  np.ndarray,
+        batch_size: int = 32,
+        epochs:     int = 3,
+        output_dir: str = "evaluation_results"
+    ) -> Tuple[ModelManager, float]:
+        """
+        Train & evaluate directly on provided arrays, saving artifacts.
+        """
+        # 1) Instantiate & train
+        model_mgr = ModelManager(
+            input_size=X_train.shape[1:], 
+            output_size=len(np.unique(y_train))
+        )
+        history = model_mgr.train(X_train, y_train, epochs=epochs, batch_size=batch_size)
+
+        # 2) Evaluate numeric accuracy
+        acc = model_mgr.evaluate(X_test, y_test)
+        print(f"Test accuracy: {acc:.2%}")
+
+        # 3) Save artifacts
+        evaluator = EvaluationManager(
+            model=model_mgr,
+            X_test=X_test,
+            y_test=y_test,
+            output_dir=output_dir,
+        )
+        evaluator.confusion_matrix()
+        evaluator.classification_report()
+        evaluator.roc_curve()
+        evaluator.loss_curve(history)
+
+        return model_mgr, acc
+    
