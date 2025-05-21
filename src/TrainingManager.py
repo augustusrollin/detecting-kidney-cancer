@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from src.ModelManager import ModelManager
 
 class TrainingManager:
-    def __init__(self, input_size, output_size, batch_size=32, epochs=50):
+    def __init__(self, input_size, output_size, batch_size=32, epochs=3):
         """
         Initialize the TrainingManager with necessary parameters.
         """
