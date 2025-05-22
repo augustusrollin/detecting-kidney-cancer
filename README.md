@@ -56,8 +56,7 @@ pip install -r requirements_dev.txt
 - `make train`  Run training and unit tests  
 - `make evaluate` Run evaluation suite and generate artifacts  
 - `make pipeline` Execute pytest on `tests/test_pipeline.py`  
-- `make clean`  Remove build artifacts and caches  
-- `make usage`  Run the full pipeline with default parameters
+
 
 ## Sample Data
 Below are example CT images illustrating each kidney condition class in our dataset:
