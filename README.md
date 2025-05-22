@@ -67,8 +67,8 @@ Below are example CT images illustrating each kidney condition class in our data
 | ![Tumor Example](kidney_ct_data/Tumor/Tumor-%20(1).jpg) | ![Cyst Example](kidney_ct_data/Normal/Normal-%20(1).jpg) | ![Stone Example](kidney_ct_data/Stone/Stone-%20(1).jpg) | ![Benign Example](kidney_ct_data/Cyst/Cyst-%20(1).jpg) |
 
 ## Research Papers
-- [Functional Research Paper](docs/functional_research_paper.pdf)
-- [Security Research Paper](docs/security_research_paper.pdf)
+- [Functional Research Paper](functional_research_paper.pdf)
+- [Security Research Paper](security_research_paper.pdf)
 
 ## Slideshow
-- [Project Slide Deck](slides/KidneyCancerDetection_Slides.pptx)
+- [Project Slide Deck](KidneyCancerDetection_Slides.pptx)
